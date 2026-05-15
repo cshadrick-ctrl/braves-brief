@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Daydream Business — Braves Foundation 50/50</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F04F24;
+    --orange-soft: #F58A6B;
+    --orange-pale: #FBD5C5;
+    --peach: #FDE8DB;
+    --cream: #FBF5EE;
+    --white: #FFFFFF;
+    --ink: #1A1A1A;
+    --grey: #6B6B6B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: #2A2A2A;
+    font-family: 'Instrument Sans', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .deck {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Gradient backgrounds - the signature Ammunition peach-to-white wash */
+  .bg-wash {
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 50%, var(--orange-soft) 0%, var(--orange-pale) 25%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 85%, var(--orange-pale) 0%, transparent 50%),
+      linear-gradient(180deg, #FFFFFF 0%, #FFF7F0 100%);
+  }
+
+  .bg-wash-right {
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 50%, var(--orange-soft) 0%, var(--orange-pale) 25%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 10% 90%, var(--peach) 0%, transparent 50%),
+      linear-gradient(180deg, #FFFFFF 0%, #FFF7F0 100%);
+  }
+
+  .bg-wash-soft {
+    background:
+      radial-gradient(ellipse 90% 70% at 90% 100%, var(--orange-pale) 0%, var(--peach) 30%, transparent 65%),
+      linear-gradient(180deg, #FFFFFF 0%, var(--cream) 100%);
+  }
+
+  .bg-orange {
+    background: linear-gradient(135deg, var(--orange) 0%, #E04318 60%, #C73810 100%);
+    color: var(--white);
+  }
+
+  .bg-white { background: var(--white); }
+
+  /* Top wordmark - on every slide */
+  .wordmark {
+    position: absolute;
+    top: 32px;
+    left: 48px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--ink);
+  }
+
+  .bg-orange .wordmark { color: var(--white); }
+
+  /* Slide content */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 9vh 6vw 6vh;
+    position: relative;
+    z-index: 2;
+  }
+
+  .content.top {
+    justify-content: flex-start;
+    padding-top: 14vh;
+  }
+
+  /* Typography */
+  .serif {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+  }
+
+  /* Eyebrow - small serif caps */
+  .eyebrow {
+    font-family: 'Instrument Serif', serif;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    color: var(--ink);
+  }
+
+  .bg-orange .eyebrow { color: var(--white); opacity: 0.92; }
+
+  /* Headlines */
+  .display {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(56px, 7vw, 110px);
+    line-height: 1.0;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+
+  .bg-orange .display { color: var(--white); }
+
+  .display .serif {
+    font-size: 1em;
+    line-height: 1.0;
+  }
+
+  .h1 {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(44px, 5.2vw, 80px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .h2 {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(32px, 3.8vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+  }
+
+  .body {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(20px, 1.6vw, 28px);
+    line-height: 1.45;
+    letter-spacing: -0.005em;
+    max-width: 68ch;
+    color: var(--ink);
+  }
+
+  .body-lg {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(26px, 2.2vw, 36px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    max-width: 28ch;
+  }
+
+  .bg-orange .body,
+  .bg-orange .body-lg { color: var(--white); }
+
+  .body strong { font-weight: 500; }
+
+  /* The bolt mark */
+  .bolt {
+    display: inline-block;
+    vertical-align: baseline;
+    margin-left: 0.15em;
+    transform: translateY(0.05em);
+  }
+  .bolt svg { display: block; }
+
+  /* Spacing */
+  .stack > * + * { margin-top: 28px; }
+  .stack-lg > * + * { margin-top: 48px; }
+
+  /* Cover slide special */
+  .cover-meta {
+    position: absolute;
+    bottom: 48px;
+    left: 48px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+
+  /* Two-column slides */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  /* Pull quote style */
+  .pull {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(36px, 4.5vw, 64px);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+    max-width: 22ch;
+  }
+
+  /* Section opener */
+  .section-eyebrow {
+    font-family: 'Instrument Serif', serif;
+    font-style: normal;
+    font-size: 18px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    opacity: 0.92;
+  }
+
+  /* Day timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+
+  .timeline-item {
+    padding-top: 20px;
+    border-top: 1.5px solid var(--orange);
+  }
+
+  .timeline-time {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .timeline-text {
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--ink);
+  }
+
+  /* Numbered list */
+  .num-list { margin-top: 32px; }
+
+  .num-item {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 32px;
+    padding: 22px 0;
+    border-top: 1px solid rgba(26, 26, 26, 0.12);
+    align-items: baseline;
+  }
+
+  .num-item:last-child { border-bottom: 1px solid rgba(26, 26, 26, 0.12); }
+
+  .num-num {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 32px;
+    color: var(--orange);
+    line-height: 1;
+  }
+
+  .num-title {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.3;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .num-desc {
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--grey);
+    max-width: 76ch;
+  }
+
+  /* Stat row */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 64px;
+    margin-top: 64px;
+    max-width: 1100px;
+  }
+
+  .stat-label {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--grey);
+    margin-bottom: 16px;
+  }
+
+  .stat-figure {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: clamp(48px, 5.5vw, 84px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  /* Two-list mandatory/not */
+  .mandatory-list { list-style: none; margin-top: 28px; }
+  .mandatory-list li {
+    padding: 18px 0;
+    border-top: 1px solid rgba(26, 26, 26, 0.12);
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .mandatory-list li:last-child { border-bottom: 1px solid rgba(26, 26, 26, 0.12); }
+  .col-eyebrow {
+    font-family: 'Instrument Serif', serif;
+    font-size: 16px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    right: 160px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    z-index: 100;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+
+  .nav button {
+    background: transparent;
+    border: 1.5px solid currentColor;
+    color: inherit;
+    padding: 9px 16px;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .nav button:hover { color: var(--orange); border-color: var(--orange); }
+
+  .counter {
+    font-family: 'Instrument Sans', sans-serif;
+    font-feature-settings: "tnum";
+    margin-right: 4px;
+  }
+
+  .hint {
+    position: fixed;
+    bottom: 28px;
+    left: 32px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    z-index: 100;
+  }
+
+  /* Page number */
+  .page-num {
+    position: absolute;
+    bottom: 32px;
+    right: 48px;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--grey);
+    z-index: 1;
+  }
+
+  .bg-orange .page-num { color: rgba(255, 255, 255, 0.6); }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide bg-wash active">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="display" style="margin-bottom: 24px;">The daydream <span class="serif">business.</span><span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
+      <div class="body-lg serif">A creative brief for the Atlanta Braves Foundation 50/50.</div>
+    </div>
+    <div class="cover-meta">Creative Brief<br/>May 2026</div>
+  </section>
+
+  <!-- SLIDE 2: WHERE WE ARE -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="display">Eighty-one nights a year,<br/>forty thousand people walk into Truist Park <span class="serif">ready to be moved.</span></div>
+    </div>
+    <div class="page-num">02</div>
+  </section>
+
+  <!-- SLIDE 3: yes-yes-yes-no -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="stack">
+        <div class="h1">They'll pay <span class="serif">$14</span> for a beer.</div>
+        <div class="h1">They'll pay <span class="serif">$80</span> for a jersey.</div>
+        <div class="h1">They'll pay <span class="serif">$40</span> for parking.</div>
+        <div class="h1" style="margin-top: 40px; color: var(--orange);">They'll scream for a homer <span class="serif">they may never see.</span></div>
+      </div>
+    </div>
+    <div class="page-num">03</div>
+  </section>
+
+  <!-- SLIDE 4: The no -->
+  <section class="slide bg-wash-right">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="display">Then somebody walks past with <span class="serif">a 50/50 ticket</span><br/>and they say no.<span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
+    </div>
+    <div class="page-num">04</div>
+  </section>
+
+  <!-- SLIDE 5: The gap -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="eyebrow">The gap</div>
+      <div class="h1">This isn't a marketing gap.<br/><span class="serif">It's a meaning gap.</span></div>
+      <div class="body" style="margin-top: 48px;">Peer team foundations raise tens of millions on the same product. The Braves Foundation raises around $2M. The size of the gap tells you the answer isn't in the booth.</div>
+      <div class="stat-row">
+        <div>
+          <div class="stat-label">Atlanta Braves Foundation</div>
+          <div class="stat-figure">$2M</div>
+        </div>
+        <div>
+          <div class="stat-label">Jays Care, Toronto</div>
+          <div class="stat-figure">$9.5M</div>
+        </div>
+        <div>
+          <div class="stat-label">Oilers Foundation, Edmonton</div>
+          <div class="stat-figure">$102M</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">05</div>
+  </section>
+
+  <!-- SLIDE 6: Cultural truth opener -->
+  <section class="slide bg-orange">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="section-eyebrow">The cultural truth</div>
+      <div class="display">We are living through<br/><span class="serif">the great inflation</span><br/>of the win.</div>
+    </div>
+    <div class="page-num">06</div>
+  </section>
+
+  <!-- SLIDE 7: Then / Now -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="two-col">
+        <div>
+          <div class="eyebrow">Then</div>
+          <div class="pull">A few thousand dollars was a story.</div>
+        </div>
+        <div>
+          <div class="eyebrow" style="color: var(--orange);">Now</div>
+          <div class="pull" style="color: var(--orange);">A few thousand dollars is a Tuesday parlay.</div>
+        </div>
+      </div>
+      <div class="body" style="margin-top: 64px;">Powerball trained the country to think in eight zeros. Crypto trained a generation to think in ten. Every week, a kid on TikTok screenshots a sportsbook payout that would have been life-changing money in 1995, and a fan in 2026 calls it lunch.</div>
+      <div class="body serif" style="margin-top: 24px; font-size: 24px;">We didn't change. The fantasy did.</div>
+    </div>
+    <div class="page-num">07</div>
+  </section>
+
+  <!-- SLIDE 8: Insight opener -->
+  <section class="slide bg-orange">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="section-eyebrow">The human insight</div>
+      <div class="display">Nobody plays the lottery <span class="serif">for the odds.</span><br/>They play <span class="serif">for the daydream.</span></div>
+    </div>
+    <div class="page-num">08</div>
+  </section>
+
+  <!-- SLIDE 9: Powerball example -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="stack">
+        <div class="h1">Powerball booms at <span class="serif">$800M</span><br/>and yawns at <span class="serif">$40M.</span></div>
+        <div class="body">Not because $40M wouldn't change a life. It would change almost any life in this country. But at $800M, the fantasy goes feral. The brain runs free. The mortgage is gone, the in-laws are taken care of, the boat is named, the speech is written.</div>
+        <div class="body">At $40M, the brain stalls. The fantasy doesn't catch. The buying behaviour evaporates.</div>
+        <div class="pull" style="color: var(--orange); margin-top: 32px;">The daydream is the product. The dollar amount is just its container.</div>
+      </div>
+    </div>
+    <div class="page-num">09</div>
+  </section>
+
+  <!-- SLIDE 10: Second mechanic -->
+  <section class="slide bg-wash-soft">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="stack">
+        <div class="eyebrow">And there's a second mechanic</div>
+        <div class="h1">People don't decide to play <span class="serif">at the counter.</span><br/>They decide <span class="serif">on the way.</span></div>
+        <div class="body" style="margin-top: 16px;">The Powerball player decides in the car. The sports bettor builds a parlay over coffee for a game that night. The daydream is fully formed long before money changes hands. <strong>The transaction is a closing motion, not a decision.</strong></div>
+      </div>
+    </div>
+    <div class="page-num">10</div>
+  </section>
+
+  <!-- SLIDE 11: Why the Braves fail -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="eyebrow">Why the 50/50 underperforms</div>
+      <div class="h1">The Braves 50/50 fails <span class="serif">on both counts.</span></div>
+      <div class="two-col" style="margin-top: 56px;">
+        <div>
+          <div class="eyebrow" style="color: var(--orange);">i. The fantasy</div>
+          <div class="h2">The prize sits in <span class="serif">the dead zone.</span></div>
+          <div class="body" style="margin-top: 20px;">Too big to be a beer round. Too small to be a new life. There's nothing for the fan's brain to picture.</div>
+        </div>
+        <div>
+          <div class="eyebrow" style="color: var(--orange);">ii. The timing</div>
+          <div class="h2">The journey is <span class="serif">four seconds long.</span></div>
+          <div class="body" style="margin-top: 20px;">The customer journey has been compressed into a booth exchange during a game. Four seconds isn't enough time for a fantasy to form.</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">11</div>
+  </section>
+
+  <!-- SLIDE 12: Pause statement -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="h1">The fan hasn't been given <span class="serif">a daydream.</span></div>
+      <div class="h1" style="margin-top: 28px;">And they haven't been given <span class="serif">the time to have one.</span></div>
+    </div>
+    <div class="page-num">12</div>
+  </section>
+
+  <!-- SLIDE 13: PROPOSITION reveal -->
+  <section class="slide bg-orange">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="section-eyebrow">The proposition</div>
+      <div class="display">Give Braves Country<br/><span class="serif">something to dream about.</span></div>
+    </div>
+    <div class="page-num">13</div>
+  </section>
+
+  <!-- SLIDE 14: Proposition explained -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="stack">
+        <div class="h1">This isn't <span class="serif">a tagline.</span></div>
+        <div class="body" style="max-width: 56ch;">It's a brief to the agency from itself. Every piece of work that comes from this should pass one test:</div>
+        <div class="pull" style="color: var(--orange);">Did we make a Braves fan want something they didn't want before they read it, watched it, or stood next to it?</div>
+        <div class="body" style="margin-top: 8px;">If yes, the work is doing its job.<br/>If no, the work is wallpaper.</div>
+      </div>
+    </div>
+    <div class="page-num">14</div>
+  </section>
+
+  <!-- SLIDE 15: Section opener - how -->
+  <section class="slide bg-orange">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="section-eyebrow">So how does the work do that</div>
+      <div class="display">Five things. <span class="serif">Connected.</span></div>
+    </div>
+    <div class="page-num">15</div>
+  </section>
+
+  <!-- SLIDE 16: Five levers -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content top">
+      <div class="eyebrow">What the work has to do</div>
+      <div class="h2" style="max-width: 26ch;">Five behavioural levers. <span class="serif">All five, or none.</span></div>
+      <div class="num-list">
+        <div class="num-item">
+          <div class="num-num">01</div>
+          <div>
+            <div class="num-title">Move the decision upstream.</div>
+            <div class="num-desc">The 50/50 can't rely on a four-second booth moment to close a sale. The campaign does its emotional work hours before the fan arrives, so the decision is settled by first pitch.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">02</div>
+          <div>
+            <div class="num-title">Make the jackpot ambient.</div>
+            <div class="num-desc">The number is the most important asset in this product. Put it everywhere a Braves fan looks. Phone, podcast, feed, digital screens at The Battery, BravesVision ticker. Make it feel like the weather.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">03</div>
+          <div>
+            <div class="num-title">Build it social before transactional.</div>
+            <div class="num-desc">A fan who's told a friend they're playing has already bought. Create reasons to commit publicly. Group-chat-friendly content. "You in?" mechanics. Social pressure does the conversion, not the seller.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">04</div>
+          <div>
+            <div class="num-title">Make the stadium the payoff, not the pitch.</div>
+            <div class="num-desc">Every touchpoint from earlier in the day pays off in-park. BravesVision runs the climb. The activation around the winner is loud enough to recruit next week's buyers in real time.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">05</div>
+          <div>
+            <div class="num-title">Treat winners as the headline talent.</div>
+            <div class="num-desc">Real winners, real Atlanta, real lives changed. Their stories run constantly. They're the most credible proof the daydream is real - the thing that makes tomorrow's daydream real for the next fan.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">16</div>
+  </section>
+
+  <!-- SLIDE 17: Day in life -->
+  <section class="slide bg-wash-soft">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content top">
+      <div class="eyebrow">How the day should feel</div>
+      <div class="h2" style="max-width: 32ch;">By the time the fan walks through the gates,<br/>they've encountered the pot <span class="serif">at least three times.</span></div>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-time">7:30 AM</div>
+          <div class="timeline-text">Wakes up. Tonight's pot is on his phone.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">8:45 AM</div>
+          <div class="timeline-text">Hears the number on drive-time radio.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">12:30 PM</div>
+          <div class="timeline-text">Sees a winner's story over lunch.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">5:15 PM</div>
+          <div class="timeline-text">Group chat lights up. Who's in?</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">6:40 PM</div>
+          <div class="timeline-text">Walks past a screen at The Battery. Number's climbed.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-time">7:08 PM</div>
+          <div class="timeline-text">In his seat. Ticker's moving. He's already in.</div>
+        </div>
+      </div>
+      <div class="pull serif" style="color: var(--orange); margin-top: 56px; font-size: clamp(28px, 3vw, 40px);">The seller at section 110 isn't an interruption.<br/>They're the friend in line at the gas station saying, you in?</div>
+    </div>
+    <div class="page-num">17</div>
+  </section>
+
+  <!-- SLIDE 18: Tone -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="eyebrow">Tone</div>
+      <div class="h1">Confident. Vivid. <span class="serif">A little loose.</span></div>
+      <div class="body" style="margin-top: 40px;">A city that knows it's the South's biggest team and acts like it.</div>
+      <div class="body" style="margin-top: 16px;">Not charitable. Not solemn. Not earnest in the careful way nonprofits often are. The 50/50 should feel like it belongs in the same conversation as a Powerball headline, a viral parlay, a kid stealing a base on national television.</div>
+      <div class="pull" style="color: var(--orange); margin-top: 40px;">The voice of the friend in the group chat who already knows the pot and is asking if you're in.</div>
+    </div>
+    <div class="page-num">18</div>
+  </section>
+
+  <!-- SLIDE 19: Mandatories + Not doing -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content top">
+      <div class="two-col" style="gap: 100px;">
+        <div>
+          <div class="col-eyebrow">Mandatories</div>
+          <ul class="mandatory-list">
+            <li>The Foundation cause story stays tellable for stewardship and major donor work. It's the dividend, not the headline.</li>
+            <li>Harrah's Cherokee Casinos (presenting partner) is respected in the platform, not designed around.</li>
+            <li>The work runs on every surface a Braves fan touches. Phone, radio, social, broadcast, BravesVision, in-park, around The Battery, in-app.</li>
+          </ul>
+        </div>
+        <div>
+          <div class="col-eyebrow">What we're not doing</div>
+          <ul class="mandatory-list">
+            <li>Not running player vs cause creative. That test has been run. Player won. We move forward, not refight it.</li>
+            <li>Not running impact-led acquisition. Stewardship work, yes. Acquisition, no.</li>
+            <li>Not making the booth the primary touchpoint. The booth is the close. It can't also be the campaign.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">19</div>
+  </section>
+
+  <!-- SLIDE 20: Success -->
+  <section class="slide bg-wash-soft">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content top">
+      <div class="eyebrow">What success looks like</div>
+      <div class="h2">Four behaviours. <span class="serif">In order.</span></div>
+      <div class="num-list">
+        <div class="num-item">
+          <div class="num-num">01</div>
+          <div>
+            <div class="num-title">A fan decides to play before they reach the stadium.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">02</div>
+          <div>
+            <div class="num-title">A group chat shares the jackpot before first pitch.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">03</div>
+          <div>
+            <div class="num-title">A fan stays after the 8th inning. The winner reveal has become its own moment.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">04</div>
+          <div>
+            <div class="num-title">A fan in Macon, Mobile, or Tallahassee opens the app to check tonight's pot - on a night they're not at the game.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-num">20</div>
+  </section>
+
+  <!-- SLIDE 21: Provocation -->
+  <section class="slide bg-orange">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="section-eyebrow">The provocation</div>
+      <div class="display">Don't make an ad.<br/><span class="serif">Make a daydream</span><br/>Braves Country wants in on.</div>
+    </div>
+    <div class="page-num">21</div>
+  </section>
+
+  <!-- SLIDE 22: Closing -->
+  <section class="slide bg-wash">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <div class="h1">We're not in the lottery business.</div>
+      <div class="h1" style="margin-top: 24px; opacity: 0.5;">We're not in the charity business.</div>
+      <div class="h1" style="margin-top: 24px; color: var(--orange);">We're in <span class="serif">the daydream business.</span><span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
+    </div>
+    <div class="page-num">22</div>
+  </section>
+
+</div>
+
+<div class="hint">← → to navigate</div>
+<div class="nav">
+  <span class="counter" id="counter">01 / 22</span>
+  <button onclick="prev()">Prev</button>
+  <button onclick="next()">Next</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function show(i) {
+    slides[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    counter.textContent = `${pad(current + 1)} / ${pad(slides.length)}`;
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+  });
+</script>
+
+</body>
+</html>
