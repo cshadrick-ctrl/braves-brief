@@ -1518,18 +1518,26 @@
   };
 
   // Initialize Firebase
+  let firebaseInitAttempts = 0;
+  const MAX_FIREBASE_ATTEMPTS = 50; // ~5 seconds with 100ms intervals
+
   function initializeFirebase() {
     try {
       if (typeof firebase === 'undefined' || !firebase.apps) {
-        console.log('Firebase SDK not loaded yet, will retry...');
-        setTimeout(initializeFirebase, 100);
+        firebaseInitAttempts++;
+        if (firebaseInitAttempts < MAX_FIREBASE_ATTEMPTS) {
+          setTimeout(initializeFirebase, 100);
+        } else {
+          console.warn('Firebase SDK failed to load after multiple attempts, using localStorage fallback');
+          loadComments();
+        }
         return;
       }
 
       // Check if already initialized
       if (firebase.apps.length > 0) {
         db = firebase.database();
-        console.log('Firebase initialized successfully');
+        console.log('Firebase initialized successfully - real-time comments enabled');
         loadComments();
         return;
       }
@@ -1547,7 +1555,7 @@
 
       firebase.initializeApp(firebaseConfig);
       db = firebase.database();
-      console.log('Firebase initialized successfully');
+      console.log('Firebase initialized successfully - real-time comments enabled');
       loadComments();
     } catch (error) {
       console.error('Firebase initialization error:', error);
