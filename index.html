@@ -356,13 +356,13 @@
   .nav {
     position: fixed;
     bottom: 24px;
-    right: 160px;
+    right: 48px;
     display: flex;
-    gap: 12px;
+    gap: 8px;
     align-items: center;
     z-index: 100;
     font-family: 'Instrument Sans', sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--grey);
@@ -372,12 +372,13 @@
     background: transparent;
     border: 1.5px solid currentColor;
     color: inherit;
-    padding: 9px 16px;
+    padding: 8px 14px;
     font: inherit;
     letter-spacing: inherit;
     text-transform: inherit;
     cursor: pointer;
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    white-space: nowrap;
   }
 
   .nav button:hover { color: var(--orange); border-color: var(--orange); }
@@ -414,11 +415,11 @@
 
   .bg-orange .page-num { color: rgba(255, 255, 255, 0.6); }
 
-  .bg-orange .nav { color: var(--white); }
-  .bg-orange .nav button { color: var(--white); border-color: var(--white); }
-  .bg-orange .nav button:hover { color: var(--orange); border-color: var(--orange); background: transparent; }
-  .bg-orange .counter { color: var(--white); }
-  .bg-orange .hint { color: rgba(255, 255, 255, 0.7); }
+  .bg-orange .nav { color: var(--white) !important; }
+  .bg-orange .nav button { color: var(--white) !important; border: 2px solid var(--white) !important; background: rgba(255, 255, 255, 0.08) !important; }
+  .bg-orange .nav button:hover { color: var(--white) !important; border-color: var(--white) !important; background: rgba(255, 255, 255, 0.15) !important; }
+  .bg-orange .counter { color: var(--white) !important; }
+  .bg-orange .hint { color: rgba(255, 255, 255, 0.7) !important; }
 
   /* Mobile Responsive */
   @media (max-width: 768px) {
@@ -538,8 +539,8 @@
     /* Navigation fixes */
     .nav {
       position: fixed;
-      bottom: 12px;
-      right: 40px;
+      bottom: 16px;
+      right: 16px;
       gap: 6px;
       font-size: 8px;
       flex-wrap: wrap;
@@ -549,7 +550,8 @@
     .nav button {
       padding: 6px 10px;
       font-size: 8px;
-      border: 1px solid currentColor;
+      border: 1.5px solid currentColor;
+      white-space: nowrap;
     }
 
     .counter {
