@@ -219,7 +219,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 80px;
-    align-items: center;
+    align-items: start;
   }
 
   /* Pull quote style */
@@ -413,6 +413,11 @@
   }
 
   .bg-orange .page-num { color: rgba(255, 255, 255, 0.6); }
+
+  .bg-orange .nav { color: var(--white); }
+  .bg-orange .nav button { border-color: var(--white); }
+  .bg-orange .nav button:hover { color: var(--orange); border-color: var(--orange); }
+  .bg-orange .hint { color: rgba(255, 255, 255, 0.7); }
 </style>
 </head>
 <body>
@@ -456,7 +461,7 @@
   <section class="slide bg-wash-right">
     <div class="wordmark">A M M U N I T I O N</div>
     <div class="content">
-      <div class="display">Then somebody walks past with <span class="serif">a 50/50 ticket</span><br/>and they say no.<span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
+      <div class="display">Then somebody walks past with a <span class="serif">50/50 ticket</span><br/>and they say no.<span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
     </div>
     <div class="page-num">04</div>
   </section>
@@ -602,7 +607,7 @@
       <div class="stack">
         <div class="h1">This isn't <span class="serif">a tagline.</span></div>
         <div class="body" style="max-width: 56ch;">It's a brief to the agency from itself. Every piece of work that comes from this should pass one test:</div>
-        <div class="pull" style="color: var(--orange);">Did we make a Braves fan want something they didn't want before they read it, watched it, or stood next to it?</div>
+        <div class="pull" style="color: var(--orange); max-width: 55ch;">Did we make a Braves fan want something they didn't want before they read it, watched it, or stood next to it?</div>
         <div class="body" style="margin-top: 8px;">If yes, the work is doing its job.<br/>If no, the work is wallpaper.</div>
       </div>
     </div>
@@ -675,27 +680,27 @@
       <div class="timeline">
         <div class="timeline-item">
           <div class="timeline-time">7:30 AM</div>
-          <div class="timeline-text">Wakes up. Tonight's pot is on his phone.</div>
+          <div class="timeline-text">Wakes up to a notification. Tonight's pot is already $47K. He opens the app.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-time">8:45 AM</div>
-          <div class="timeline-text">Hears the number on drive-time radio.</div>
+          <div class="timeline-text">Hears the number on drive-time radio. It's climbed $5K since breakfast.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-time">12:30 PM</div>
-          <div class="timeline-text">Sees a winner's story over lunch.</div>
+          <div class="timeline-text">Teammate mentions the pot. 'That's life-changing money.' He agrees.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-time">5:15 PM</div>
-          <div class="timeline-text">Group chat lights up. Who's in?</div>
+          <div class="timeline-text">Group chat lights up. Screenshots, links, the climb. 'Yo. You in?'</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-time">6:40 PM</div>
-          <div class="timeline-text">Walks past a screen at The Battery. Number's climbed.</div>
+          <div class="timeline-text">BravesVision shows it at $53K. A friend texts: 'Last chance. Driving now.'</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-time">7:08 PM</div>
-          <div class="timeline-text">In his seat. Ticker's moving. He's already in.</div>
+          <div class="timeline-text">In his seat. Ticker updating live. He's decided. He's already in.</div>
         </div>
       </div>
       <div class="pull serif" style="color: var(--orange); margin-top: 56px; font-size: clamp(28px, 3vw, 40px);">The seller at section 110 isn't an interruption.<br/>They're the friend in line at the gas station saying, you in?</div>
@@ -724,17 +729,17 @@
         <div>
           <div class="col-eyebrow">Mandatories</div>
           <ul class="mandatory-list">
-            <li>The Foundation cause story stays tellable for stewardship and major donor work. It's the dividend, not the headline.</li>
-            <li>Harrah's Cherokee Casinos (presenting partner) is respected in the platform, not designed around.</li>
-            <li>The work runs on every surface a Braves fan touches. Phone, radio, social, broadcast, BravesVision, in-park, around The Battery, in-app.</li>
+            <li>Keep the Foundation cause visible for donors and stewardship. It's the benefit, not the headline.</li>
+            <li>Honor Harrah's Cherokee Casinos as the presenting partner. Don't design everything around them.</li>
+            <li>The creative lives everywhere a fan looks. Phone alerts. Radio. Social. Broadcast. BravesVision. In-park. The Battery. The app.</li>
           </ul>
         </div>
         <div>
           <div class="col-eyebrow">What we're not doing</div>
           <ul class="mandatory-list">
-            <li>Not running player vs cause creative. That test has been run. Player won. We move forward, not refight it.</li>
-            <li>Not running impact-led acquisition. Stewardship work, yes. Acquisition, no.</li>
-            <li>Not making the booth the primary touchpoint. The booth is the close. It can't also be the campaign.</li>
+            <li>Not leading with players or the cause. The dream—and the chance to win—moves people. (The Foundation benefits are a bonus, not the hook.)</li>
+            <li>Not using 'help the Foundation' to sell tickets. Yes, proceeds support great work. But that's not why fans play. They play for the jackpot and the feeling of possibility.</li>
+            <li>Not making the booth the campaign. The booth is the close. The dream and the desire happen before they walk through the gates.</li>
           </ul>
         </div>
       </div>
@@ -747,30 +752,55 @@
     <div class="wordmark">A M M U N I T I O N</div>
     <div class="content top">
       <div class="eyebrow">What success looks like</div>
-      <div class="h2">Four behaviours. <span class="serif">In order.</span></div>
+      <div class="h2">Seven cascading behaviours <span class="serif">that prove the strategy works.</span></div>
       <div class="num-list">
         <div class="num-item">
           <div class="num-num">01</div>
           <div>
-            <div class="num-title">A fan decides to play before they reach the stadium.</div>
+            <div class="num-title">Unprompted checking</div>
+            <div class="num-desc">Fans open the app to track the pot without a push. Ambient presence and pull-based engagement are working.</div>
           </div>
         </div>
         <div class="num-item">
           <div class="num-num">02</div>
           <div>
-            <div class="num-title">A group chat shares the jackpot before first pitch.</div>
+            <div class="num-title">Peer initiation</div>
+            <div class="num-desc">Friends bring it up first in group chats, not the brand. Viral and social proof mechanics are real.</div>
           </div>
         </div>
         <div class="num-item">
           <div class="num-num">03</div>
           <div>
-            <div class="num-title">A fan stays after the 8th inning. The winner reveal has become its own moment.</div>
+            <div class="num-title">Pre-arrival intent</div>
+            <div class="num-desc">Fans arrive with the decision already made, not considering it at the booth. Decision moved upstream as planned.</div>
           </div>
         </div>
         <div class="num-item">
           <div class="num-num">04</div>
           <div>
-            <div class="num-title">A fan in Macon, Mobile, or Tallahassee opens the app to check tonight's pot - on a night they're not at the game.</div>
+            <div class="num-title">The winner becomes the moment</div>
+            <div class="num-desc">Fans stay to see the reveal, not as an afterthought. Payout is culturally significant.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">05</div>
+          <div>
+            <div class="num-title">Beyond-stadium engagement</div>
+            <div class="num-desc">Fans check the pot on non-game nights from other cities. Habit formation and geographic reach are real.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">06</div>
+          <div>
+            <div class="num-title">Frictionless activation</div>
+            <div class="num-desc">Booth interactions are instant, zero hesitation. Upstream work removed all barriers.</div>
+          </div>
+        </div>
+        <div class="num-item">
+          <div class="num-num">07</div>
+          <div>
+            <div class="num-title">Cascading adoption</div>
+            <div class="num-desc">One player tells friends, who tell friends. Peer pressure and FOMO mechanics work.</div>
           </div>
         </div>
       </div>
@@ -794,16 +824,52 @@
     <div class="content">
       <div class="h1">We're not in the lottery business.</div>
       <div class="h1" style="margin-top: 24px; opacity: 0.5;">We're not in the charity business.</div>
-      <div class="h1" style="margin-top: 24px; color: var(--orange);">We're in <span class="serif">the daydream business.</span><span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
+      <div class="h1" style="margin-top: 24px; color: var(--orange);">We're in<br/><span class="serif">the daydream business.</span><span class="bolt"><svg width="58" height="22" viewBox="0 0 58 22" fill="none"><path d="M2 12L18 4L24 10L40 2L56 14L40 18L34 12L18 20L2 12Z" fill="#F04F24"/></svg></span></div>
     </div>
     <div class="page-num">22</div>
+  </section>
+
+  <!-- SLIDE 23: Edmonton Oilers -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <img src="/Oilers.webp" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+    </div>
+    <div class="page-num">23</div>
+  </section>
+
+  <!-- SLIDE 24: Buffalo Bills -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <img src="/Buffalo.jpeg" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+    </div>
+    <div class="page-num">24</div>
+  </section>
+
+  <!-- SLIDE 25: 49ers -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <img src="/49ers.jpg" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+    </div>
+    <div class="page-num">25</div>
+  </section>
+
+  <!-- SLIDE 26: LA Rams -->
+  <section class="slide bg-white">
+    <div class="wordmark">A M M U N I T I O N</div>
+    <div class="content">
+      <img src="/Rams.webp" style="width: 100%; height: 400px; object-fit: cover; border-radius: 8px;">
+    </div>
+    <div class="page-num">26</div>
   </section>
 
 </div>
 
 <div class="hint">← → to navigate</div>
 <div class="nav">
-  <span class="counter" id="counter">01 / 22</span>
+  <span class="counter" id="counter">01 / 26</span>
   <button onclick="prev()">Prev</button>
   <button onclick="next()">Next</button>
 </div>
