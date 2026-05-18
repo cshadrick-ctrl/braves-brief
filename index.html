@@ -631,8 +631,8 @@
   /* Comments Panel */
   .comments-btn {
     position: fixed;
-    bottom: 24px;
-    left: 48px;
+    top: 32px;
+    right: 48px;
     background: var(--orange);
     color: var(--white);
     border: none;
@@ -645,6 +645,7 @@
     cursor: pointer;
     z-index: 99;
     transition: background 0.2s ease;
+    white-space: nowrap;
   }
 
   .comments-btn:hover {
@@ -778,8 +779,8 @@
 
   @media (max-width: 768px) {
     .comments-btn {
-      left: 16px;
-      bottom: 16px;
+      top: 16px;
+      right: 16px;
       padding: 8px 12px;
       font-size: 9px;
     }
