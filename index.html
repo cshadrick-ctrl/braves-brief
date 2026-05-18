@@ -397,17 +397,10 @@
 
   /* Page number */
   .page-num {
-    position: absolute;
-    bottom: 32px;
-    right: 48px;
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--grey);
-    z-index: 1;
+    display: none;
   }
 
-  .bg-orange .page-num { color: rgba(255, 255, 255, 0.6); }
+  .bg-orange .page-num { display: none; }
 
   .bg-orange .nav { color: var(--white) !important; }
   .bg-orange .nav button { color: var(--white) !important; border: 2px solid var(--white) !important; background: rgba(255, 255, 255, 0.08) !important; }
@@ -560,9 +553,7 @@
     }
 
     .page-num {
-      bottom: 12px;
-      right: 12px;
-      font-size: 8px;
+      display: none;
     }
 
     /* Typography */
