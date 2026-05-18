@@ -1446,7 +1446,13 @@
 
   function formatTime(timestamp) {
     if (!timestamp) return '';
-    const date = new Date(timestamp);
+
+    // Convert to number if it's a string
+    const ts = typeof timestamp === 'string' ? parseInt(timestamp) : timestamp;
+
+    if (!ts || isNaN(ts)) return 'recently';
+
+    const date = new Date(ts);
     const now = new Date();
     const diff = now - date;
     const minutes = Math.floor(diff / 60000);
