@@ -1384,15 +1384,18 @@
   }
 
   function loadComments() {
-    if (!db) return; // Firebase not initialized yet
     const slideNum = pad(current + 1);
-    const commentsRef = db.ref('comments/slide_' + slideNum);
+    const storageKey = 'comments_slide_' + slideNum;
 
-    commentsRef.on('value', (snapshot) => {
-      const comments = snapshot.val() || {};
+    try {
+      const stored = localStorage.getItem(storageKey);
+      const comments = stored ? JSON.parse(stored) : {};
       currentSlideComments = comments;
       displayComments(comments);
-    });
+    } catch (error) {
+      console.error('Error loading comments:', error);
+      displayComments({});
+    }
   }
 
   function displayComments(comments) {
@@ -1414,10 +1417,6 @@
   }
 
   function addComment() {
-    if (!db) {
-      alert('Comments system is loading. Please try again.');
-      return;
-    }
     const name = document.getElementById('commentName').value.trim();
     const text = document.getElementById('commentText').value.trim();
 
@@ -1427,19 +1426,30 @@
     }
 
     const slideNum = pad(current + 1);
-    const commentRef = db.ref('comments/slide_' + slideNum).push();
+    const storageKey = 'comments_slide_' + slideNum;
 
-    commentRef.set({
-      author: name || 'Anonymous',
-      text: text,
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    }).then(() => {
+    try {
+      let comments = {};
+      const stored = localStorage.getItem(storageKey);
+      if (stored) {
+        comments = JSON.parse(stored);
+      }
+
+      const commentId = Date.now().toString();
+      comments[commentId] = {
+        author: name || 'Anonymous',
+        text: text,
+        timestamp: Date.now()
+      };
+
+      localStorage.setItem(storageKey, JSON.stringify(comments));
       document.getElementById('commentName').value = '';
       document.getElementById('commentText').value = '';
-    }).catch(error => {
-      console.error('Error adding comment:', error);
+      displayComments(comments);
+    } catch (error) {
+      console.error('Error saving comment:', error);
       alert('Error posting comment. Please try again.');
-    });
+    }
   }
 
   function escapeHtml(text) {
