@@ -1473,25 +1473,41 @@
   };
 
   // Wait for Firebase to load, then initialize
+  let initAttempts = 0;
+  const maxInitAttempts = 50; // 5 seconds max wait
+
   function initializeFirebase() {
     if (typeof firebase === 'undefined') {
-      setTimeout(initializeFirebase, 100);
+      initAttempts++;
+      if (initAttempts < maxInitAttempts) {
+        setTimeout(initializeFirebase, 100);
+      } else {
+        console.error('Firebase SDK failed to load');
+      }
       return;
     }
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
-      authDomain: "braves-brief.firebaseapp.com",
-      databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
-      projectId: "braves-brief",
-      storageBucket: "braves-brief.firebasestorage.app",
-      messagingSenderId: "263015751740",
-      appId: "1:263015751740:web:23065b17ae7d42a5e92339"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    db = firebase.database();
-    loadComments();
+    try {
+      // Check if app is already initialized
+      if (firebase.apps.length > 0) {
+        db = firebase.database();
+      } else {
+        const firebaseConfig = {
+          apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
+          authDomain: "braves-brief.firebaseapp.com",
+          databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
+          projectId: "braves-brief",
+          storageBucket: "braves-brief.firebasestorage.app",
+          messagingSenderId: "263015751740",
+          appId: "1:263015751740:web:23065b17ae7d42a5e92339"
+        };
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+      }
+      loadComments();
+    } catch (error) {
+      console.error('Firebase initialization error:', error);
+    }
   }
 
   initializeFirebase();
