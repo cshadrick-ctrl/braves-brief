@@ -1333,9 +1333,6 @@
   </div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -1357,8 +1354,7 @@
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
   });
 
-  // Comments system with Firebase
-  let db = null;
+  // Comments system (localStorage-based)
   let currentSlideComments = {};
 
   function toggleComments() {
@@ -1464,45 +1460,8 @@
     loadComments();
   };
 
-  // Wait for Firebase to load, then initialize
-  let initAttempts = 0;
-  const maxInitAttempts = 50; // 5 seconds max wait
-
-  function initializeFirebase() {
-    if (typeof firebase === 'undefined') {
-      initAttempts++;
-      if (initAttempts < maxInitAttempts) {
-        setTimeout(initializeFirebase, 100);
-      } else {
-        console.error('Firebase SDK failed to load');
-      }
-      return;
-    }
-
-    try {
-      // Check if app is already initialized
-      if (firebase.apps.length > 0) {
-        db = firebase.database();
-      } else {
-        const firebaseConfig = {
-          apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
-          authDomain: "braves-brief.firebaseapp.com",
-          databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
-          projectId: "braves-brief",
-          storageBucket: "braves-brief.firebasestorage.app",
-          messagingSenderId: "263015751740",
-          appId: "1:263015751740:web:23065b17ae7d42a5e92339"
-        };
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.database();
-      }
-      loadComments();
-    } catch (error) {
-      console.error('Firebase initialization error:', error);
-    }
-  }
-
-  initializeFirebase();
+  // Load initial comments on page load
+  loadComments();
 </script>
 
 </body>
