@@ -1333,6 +1333,9 @@
   </div>
 </div>
 
+<!-- Firebase SDK for real-time comments -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -1354,26 +1357,13 @@
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
   });
 
-  // Comments system (localStorage-based)
+  // Firebase real-time comments system
+  let db = null;
+  let currentSlideRef = null;
   let currentSlideComments = {};
 
   function toggleComments() {
     document.getElementById('commentsPanel').classList.toggle('open');
-  }
-
-  function loadComments() {
-    const slideNum = pad(current + 1);
-    const storageKey = 'comments_slide_' + slideNum;
-
-    try {
-      const stored = localStorage.getItem(storageKey);
-      const comments = stored ? JSON.parse(stored) : {};
-      currentSlideComments = comments;
-      displayComments(comments);
-    } catch (error) {
-      console.error('Error loading comments:', error);
-      displayComments({});
-    }
   }
 
   function displayComments(comments) {
@@ -1394,6 +1384,50 @@
     `).join('');
   }
 
+  function loadComments() {
+    const slideNum = pad(current + 1);
+    const slideKey = 'slide_' + slideNum;
+
+    // If Firebase is available, use it
+    if (db) {
+      try {
+        // Remove old listener if exists
+        if (currentSlideRef) {
+          currentSlideRef.off('value');
+        }
+
+        // Create reference to this slide's comments
+        currentSlideRef = db.ref('comments/' + slideKey);
+
+        // Set up real-time listener
+        currentSlideRef.on('value', function(snapshot) {
+          const data = snapshot.val();
+          currentSlideComments = data || {};
+          displayComments(currentSlideComments);
+        });
+      } catch (error) {
+        console.error('Error setting up Firebase listener:', error);
+        // Fallback to localStorage
+        loadCommentsFromStorage(slideKey);
+      }
+    } else {
+      // Firebase not available, use localStorage
+      loadCommentsFromStorage(slideKey);
+    }
+  }
+
+  function loadCommentsFromStorage(slideKey) {
+    try {
+      const stored = localStorage.getItem(slideKey);
+      const comments = stored ? JSON.parse(stored) : {};
+      currentSlideComments = comments;
+      displayComments(comments);
+    } catch (error) {
+      console.error('Error loading comments from storage:', error);
+      displayComments({});
+    }
+  }
+
   function addComment() {
     const name = document.getElementById('commentName').value.trim();
     const text = document.getElementById('commentText').value.trim();
@@ -1404,28 +1438,51 @@
     }
 
     const slideNum = pad(current + 1);
-    const storageKey = 'comments_slide_' + slideNum;
+    const slideKey = 'slide_' + slideNum;
+    const commentId = Date.now().toString();
+    const newComment = {
+      author: name || 'Anonymous',
+      text: text,
+      timestamp: Date.now()
+    };
 
-    try {
-      let comments = {};
-      const stored = localStorage.getItem(storageKey);
-      if (stored) {
-        comments = JSON.parse(stored);
+    // If Firebase is available, use it
+    if (db) {
+      try {
+        db.ref('comments/' + slideKey + '/' + commentId).set(newComment, function(error) {
+          if (error) {
+            console.error('Error saving to Firebase:', error);
+            // Fallback to localStorage
+            saveCommentToStorage(slideKey, commentId, newComment);
+            alert('Comment saved locally (not synced to other users)');
+          } else {
+            // Success - comment will appear via the real-time listener
+            document.getElementById('commentName').value = '';
+            document.getElementById('commentText').value = '';
+          }
+        });
+      } catch (error) {
+        console.error('Error with Firebase:', error);
+        saveCommentToStorage(slideKey, commentId, newComment);
+        alert('Error posting comment. Please try again.');
       }
+    } else {
+      // Firebase not available, use localStorage
+      saveCommentToStorage(slideKey, commentId, newComment);
+      alert('Comments are saved locally on your browser.');
+    }
+  }
 
-      const commentId = Date.now().toString();
-      comments[commentId] = {
-        author: name || 'Anonymous',
-        text: text,
-        timestamp: Date.now()
-      };
-
-      localStorage.setItem(storageKey, JSON.stringify(comments));
+  function saveCommentToStorage(slideKey, commentId, comment) {
+    try {
+      let comments = currentSlideComments || {};
+      comments[commentId] = comment;
+      localStorage.setItem(slideKey, JSON.stringify(comments));
       document.getElementById('commentName').value = '';
       document.getElementById('commentText').value = '';
       displayComments(comments);
     } catch (error) {
-      console.error('Error saving comment:', error);
+      console.error('Error saving comment to storage:', error);
       alert('Error posting comment. Please try again.');
     }
   }
@@ -1460,8 +1517,51 @@
     loadComments();
   };
 
-  // Load initial comments on page load
-  loadComments();
+  // Initialize Firebase
+  function initializeFirebase() {
+    try {
+      if (typeof firebase === 'undefined' || !firebase.apps) {
+        console.log('Firebase SDK not loaded yet, will retry...');
+        setTimeout(initializeFirebase, 100);
+        return;
+      }
+
+      // Check if already initialized
+      if (firebase.apps.length > 0) {
+        db = firebase.database();
+        console.log('Firebase initialized successfully');
+        loadComments();
+        return;
+      }
+
+      // Initialize Firebase with config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
+        authDomain: "braves-brief.firebaseapp.com",
+        databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
+        projectId: "braves-brief",
+        storageBucket: "braves-brief.firebasestorage.app",
+        messagingSenderId: "263015751740",
+        appId: "1:263015751740:web:23065b17ae7d42a5e92339"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+      console.log('Firebase initialized successfully');
+      loadComments();
+    } catch (error) {
+      console.error('Firebase initialization error:', error);
+      console.log('Using localStorage fallback for comments');
+      loadComments();
+    }
+  }
+
+  // Start initialization when page loads
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeFirebase);
+  } else {
+    initializeFirebase();
+  }
 </script>
 
 </body>
