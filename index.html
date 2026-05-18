@@ -418,6 +418,138 @@
   .bg-orange .nav button { border-color: var(--white); }
   .bg-orange .nav button:hover { color: var(--orange); border-color: var(--orange); }
   .bg-orange .hint { color: rgba(255, 255, 255, 0.7); }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .content {
+      padding: 6vh 4vw 4vh;
+    }
+
+    .content.top {
+      padding-top: 10vh;
+    }
+
+    .two-col {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    .timeline {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .timeline-item {
+      padding-top: 12px;
+    }
+
+    .timeline-time {
+      font-size: 14px;
+    }
+
+    .timeline-text {
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .stat-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      margin-top: 32px;
+    }
+
+    .num-item {
+      grid-template-columns: 48px 1fr;
+      gap: 16px;
+      padding: 16px 0;
+    }
+
+    .num-num {
+      font-size: 24px;
+    }
+
+    .num-title {
+      font-size: 18px;
+    }
+
+    .num-desc {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .nav {
+      position: fixed;
+      bottom: 16px;
+      right: 48px;
+      gap: 8px;
+      font-size: 9px;
+    }
+
+    .nav button {
+      padding: 7px 12px;
+      font-size: 9px;
+    }
+
+    .counter {
+      font-size: 9px;
+    }
+
+    .hint {
+      bottom: 20px;
+      left: 16px;
+      font-size: 8px;
+    }
+
+    .page-num {
+      bottom: 16px;
+      right: 16px;
+      font-size: 9px;
+    }
+
+    .display {
+      font-size: clamp(32px, 6vw, 56px);
+    }
+
+    .h1 {
+      font-size: clamp(28px, 4.5vw, 56px);
+    }
+
+    .h2 {
+      font-size: clamp(22px, 3.5vw, 40px);
+    }
+
+    .body {
+      font-size: clamp(14px, 1.4vw, 20px);
+      max-width: 100%;
+    }
+
+    .body-lg {
+      font-size: clamp(18px, 2vw, 28px);
+      max-width: 100%;
+    }
+
+    .pull {
+      font-size: clamp(20px, 4vw, 48px);
+      max-width: 100%;
+    }
+
+    .eyebrow {
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    .mandatory-list li {
+      padding: 12px 0;
+      font-size: 14px;
+    }
+
+    .col-eyebrow {
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+  }
 </style>
 </head>
 <body>
