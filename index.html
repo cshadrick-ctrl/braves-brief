@@ -1379,20 +1379,7 @@
   });
 
   // Comments system with Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
-    authDomain: "braves-brief.firebaseapp.com",
-    databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
-    projectId: "braves-brief",
-    storageBucket: "braves-brief.firebasestorage.app",
-    messagingSenderId: "263015751740",
-    appId: "1:263015751740:web:23065b17ae7d42a5e92339"
-  };
-
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.database();
-
+  let db = null;
   let currentSlideComments = {};
 
   function toggleComments() {
@@ -1400,6 +1387,7 @@
   }
 
   function loadComments() {
+    if (!db) return; // Firebase not initialized yet
     const slideNum = pad(current + 1);
     const commentsRef = db.ref('comments/slide_' + slideNum);
 
@@ -1429,6 +1417,10 @@
   }
 
   function addComment() {
+    if (!db) {
+      alert('Comments system is loading. Please try again.');
+      return;
+    }
     const name = document.getElementById('commentName').value.trim();
     const text = document.getElementById('commentText').value.trim();
 
@@ -1483,8 +1475,29 @@
     loadComments();
   };
 
-  // Initial load
-  loadComments();
+  // Wait for Firebase to load, then initialize
+  function initializeFirebase() {
+    if (typeof firebase === 'undefined') {
+      setTimeout(initializeFirebase, 100);
+      return;
+    }
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
+      authDomain: "braves-brief.firebaseapp.com",
+      databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
+      projectId: "braves-brief",
+      storageBucket: "braves-brief.firebasestorage.app",
+      messagingSenderId: "263015751740",
+      appId: "1:263015751740:web:23065b17ae7d42a5e92339"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    loadComments();
+  }
+
+  initializeFirebase();
 </script>
 
 </body>
