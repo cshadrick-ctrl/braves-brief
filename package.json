@@ -1,0 +1,8 @@
+{
+  "name": "braves-brief",
+  "version": "1.0.0",
+  "description": "Atlanta Braves Foundation creative brief presentation",
+  "dependencies": {
+    "pg": "^8.11.3"
+  }
+}

@@ -1333,9 +1333,6 @@
   </div>
 </div>
 
-<!-- Firebase SDK for real-time comments (compat version for global scope) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat/app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-compat/database.js"></script>
 
 <script>
   const slides = document.querySelectorAll('.slide');
@@ -1361,10 +1358,8 @@
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
   });
 
-  // Firebase real-time comments system
-  let db = null;
-  let currentSlideRef = null;
-  let currentSlideComments = {};
+  // Neon PostgreSQL comments system via Vercel API
+  let currentSlideComments = [];
 
   function toggleComments() {
     document.getElementById('commentsPanel').classList.toggle('open');
@@ -1372,14 +1367,13 @@
 
   function displayComments(comments) {
     const list = document.getElementById('commentsList');
-    const commentArray = Object.values(comments).sort((a, b) => b.timestamp - a.timestamp);
 
-    if (commentArray.length === 0) {
+    if (!Array.isArray(comments) || comments.length === 0) {
       list.innerHTML = '<div class="comments-empty">No comments yet</div>';
       return;
     }
 
-    list.innerHTML = commentArray.map(comment => `
+    list.innerHTML = comments.map(comment => `
       <div class="comment-item">
         <div class="comment-author">${escapeHtml(comment.author || 'Anonymous')}</div>
         <div class="comment-text">${escapeHtml(comment.text)}</div>
@@ -1388,51 +1382,23 @@
     `).join('');
   }
 
-  function loadComments() {
-    const slideNum = pad(current + 1);
-    const slideKey = 'slide_' + slideNum;
+  async function loadComments() {
+    const slideNum = current + 1;
 
-    // If Firebase is available, use it
-    if (db) {
-      try {
-        // Remove old listener if exists
-        if (currentSlideRef) {
-          currentSlideRef.off('value');
-        }
-
-        // Create reference to this slide's comments
-        currentSlideRef = db.ref('comments/' + slideKey);
-
-        // Set up real-time listener
-        currentSlideRef.on('value', function(snapshot) {
-          const data = snapshot.val();
-          currentSlideComments = data || {};
-          displayComments(currentSlideComments);
-        });
-      } catch (error) {
-        console.error('Error setting up Firebase listener:', error);
-        // Fallback to localStorage
-        loadCommentsFromStorage(slideKey);
-      }
-    } else {
-      // Firebase not available, use localStorage
-      loadCommentsFromStorage(slideKey);
-    }
-  }
-
-  function loadCommentsFromStorage(slideKey) {
     try {
-      const stored = localStorage.getItem(slideKey);
-      const comments = stored ? JSON.parse(stored) : {};
+      const response = await fetch(`/api/comments?slide=${slideNum}`);
+      if (!response.ok) throw new Error('Failed to load comments');
+
+      const comments = await response.json();
       currentSlideComments = comments;
       displayComments(comments);
     } catch (error) {
-      console.error('Error loading comments from storage:', error);
-      displayComments({});
+      console.error('Error loading comments:', error);
+      displayComments([]);
     }
   }
 
-  function addComment() {
+  async function addComment() {
     const name = document.getElementById('commentName').value.trim();
     const text = document.getElementById('commentText').value.trim();
 
@@ -1441,52 +1407,33 @@
       return;
     }
 
-    const slideNum = pad(current + 1);
-    const slideKey = 'slide_' + slideNum;
-    const commentId = Date.now().toString();
-    const newComment = {
-      author: name || 'Anonymous',
-      text: text,
-      timestamp: Date.now()
-    };
+    const slideNum = current + 1;
+    const timestamp = Date.now();
 
-    // If Firebase is available, use it
-    if (db) {
-      try {
-        db.ref('comments/' + slideKey + '/' + commentId).set(newComment, function(error) {
-          if (error) {
-            console.error('Error saving to Firebase:', error);
-            // Fallback to localStorage
-            saveCommentToStorage(slideKey, commentId, newComment);
-            alert('Comment saved locally (not synced to other users)');
-          } else {
-            // Success - comment will appear via the real-time listener
-            document.getElementById('commentName').value = '';
-            document.getElementById('commentText').value = '';
-          }
-        });
-      } catch (error) {
-        console.error('Error with Firebase:', error);
-        saveCommentToStorage(slideKey, commentId, newComment);
-        alert('Error posting comment. Please try again.');
-      }
-    } else {
-      // Firebase not available, use localStorage
-      saveCommentToStorage(slideKey, commentId, newComment);
-      alert('Comments are saved locally on your browser.');
-    }
-  }
-
-  function saveCommentToStorage(slideKey, commentId, comment) {
     try {
-      let comments = currentSlideComments || {};
-      comments[commentId] = comment;
-      localStorage.setItem(slideKey, JSON.stringify(comments));
+      const response = await fetch('/api/comments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          slide: slideNum,
+          author: name || 'Anonymous',
+          text: text,
+          timestamp: timestamp
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to post comment');
+
+      // Clear form
       document.getElementById('commentName').value = '';
       document.getElementById('commentText').value = '';
-      displayComments(comments);
+
+      // Reload comments to show the new one
+      await loadComments();
     } catch (error) {
-      console.error('Error saving comment to storage:', error);
+      console.error('Error posting comment:', error);
       alert('Error posting comment. Please try again.');
     }
   }
@@ -1521,58 +1468,11 @@
     loadComments();
   };
 
-  // Initialize Firebase
-  let firebaseInitAttempts = 0;
-  const MAX_FIREBASE_ATTEMPTS = 50; // ~5 seconds with 100ms intervals
-
-  function initializeFirebase() {
-    try {
-      if (typeof firebase === 'undefined' || !firebase.apps) {
-        firebaseInitAttempts++;
-        if (firebaseInitAttempts < MAX_FIREBASE_ATTEMPTS) {
-          setTimeout(initializeFirebase, 100);
-        } else {
-          console.warn('Firebase SDK failed to load after multiple attempts, using localStorage fallback');
-          loadComments();
-        }
-        return;
-      }
-
-      // Check if already initialized
-      if (firebase.apps.length > 0) {
-        db = firebase.database();
-        console.log('Firebase initialized successfully - real-time comments enabled');
-        loadComments();
-        return;
-      }
-
-      // Initialize Firebase with config
-      const firebaseConfig = {
-        apiKey: "AIzaSyDHd44ezbd83tL0AZ0hT2Y7j2091MbL7ZA",
-        authDomain: "braves-brief.firebaseapp.com",
-        databaseURL: "https://braves-brief-default-rtdb.firebaseio.com",
-        projectId: "braves-brief",
-        storageBucket: "braves-brief.firebasestorage.app",
-        messagingSenderId: "263015751740",
-        appId: "1:263015751740:web:23065b17ae7d42a5e92339"
-      };
-
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.database();
-      console.log('Firebase initialized successfully - real-time comments enabled');
-      loadComments();
-    } catch (error) {
-      console.error('Firebase initialization error:', error);
-      console.log('Using localStorage fallback for comments');
-      loadComments();
-    }
-  }
-
-  // Start initialization when page loads
+  // Load comments when page loads
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeFirebase);
+    document.addEventListener('DOMContentLoaded', loadComments);
   } else {
-    initializeFirebase();
+    loadComments();
   }
 </script>
 
