@@ -1353,6 +1353,10 @@
   function prev() { show(current - 1); }
 
   document.addEventListener('keydown', (e) => {
+    // Don't navigate if focus is in a text input or textarea
+    const isInInput = e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA';
+    if (isInInput) return;
+
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
   });
