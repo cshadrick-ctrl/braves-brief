@@ -383,12 +383,6 @@
 
   .nav button:hover { color: var(--orange); border-color: var(--orange); }
 
-  .counter {
-    font-family: 'Instrument Sans', sans-serif;
-    font-feature-settings: "tnum";
-    margin-right: 4px;
-  }
-
   .hint {
     position: fixed;
     bottom: 28px;
@@ -418,7 +412,6 @@
   .bg-orange .nav { color: var(--white) !important; }
   .bg-orange .nav button { color: var(--white) !important; border: 2px solid var(--white) !important; background: rgba(255, 255, 255, 0.08) !important; }
   .bg-orange .nav button:hover { color: var(--white) !important; border-color: var(--white) !important; background: rgba(255, 255, 255, 0.15) !important; }
-  .bg-orange .counter { color: var(--white) !important; }
   .bg-orange .hint { color: rgba(255, 255, 255, 0.7) !important; }
 
   /* Mobile Responsive */
@@ -1355,7 +1348,6 @@
 
 <script>
   const slides = document.querySelectorAll('.slide');
-  const counter = document.getElementById('counter');
   let current = 0;
 
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -1364,7 +1356,6 @@
     slides[current].classList.remove('active');
     current = (i + slides.length) % slides.length;
     slides[current].classList.add('active');
-    counter.textContent = `${pad(current + 1)} / ${pad(slides.length)}`;
   }
 
   function next() { show(current + 1); }
